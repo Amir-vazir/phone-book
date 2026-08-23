@@ -1,20 +1,55 @@
+import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.Scanner;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+
+
 
 public class Main {
+
+    private static ResourceBundle bundle;
+
+    private static String getMessage (String key){
+        return bundle.getString(key);
+    }
+
 
     public static void main(String[] args){
         int choice;
         Scanner input = new Scanner(System.in);
+
+        System.out.println("select language/ انتخاب زبان: ");
+        System.out.println("1 English");
+        System.out.println("فارسی 2");
+        System.out.println("Your choice (1/2):  ");
+        int langChoice = input.nextInt();
+        input.nextLine();
+
+        Locale locale;
+        if (langChoice == 1){
+          locale = Locale.ENGLISH;
+        }
+        else {
+            locale = new Locale("fa");
+        }
+
+        bundle = ResourceBundle.getBundle("messages", locale, new UTF8Control());
+
+
         String[] contacts = new String[40];
         String[] phoneNumbers = new String[40];
 
         do {
-            System.out.println("====== دفترچه تلفن ======");
-            System.out.println(" اضافه کردن مخاطب .1");
-            System.out.println(" لیست مخاطبین .2");
-            System.out.println(" جستجوی مخاطب .3");
-            System.out.println(" خروج از برنامه .4");
-            System.out.println(" لطفا گزینه مورد نظر را وارد کنید (1,2,3,4) :  ");
+            System.out.println("====== " + getMessage("menu.title") + " ======");
+            System.out.println(getMessage("menu.add"));
+            System.out.println(getMessage("menu.list"));
+            System.out.println(getMessage("menu.search"));
+            System.out.println(getMessage("menu.exit"));
+            System.out.println(getMessage("menu.prompt"));
             choice = input.nextInt();
             input.nextLine();
 
@@ -29,10 +64,10 @@ public class Main {
                     searchContacts(contacts, input, phoneNumbers);
                     break;
                 case 4 :
-                    System.out.println("خروج از برنامه");
+                    System.out.println(getMessage("exit.message"));
                     break;
                 default:
-                    System.out.println("!!گزینه نامعتبر!!");
+                    System.out.println(getMessage("invalid.option"));
               }
 
 
@@ -50,14 +85,14 @@ public class Main {
 
     public static void addContact (String[] contacts, Scanner input, String[] phoneNumbers){
 
-        System.out.println("نام مخاطب را وارد کنید:  ");
+        System.out.println(getMessage("add.name.prompt"));
         String name = input.nextLine().trim();
-        System.out.println("شماره تلفن را وارد کنید:  ");
+        System.out.println(getMessage("add.phone.prompt"));
         String phone = input.nextLine().trim();
 
 
         if (name.isEmpty()){
-            System.out.println("خطا! نام مخاطب نمی تواند خالی باشد.");
+            System.out.println(getMessage("add.error.empty"));
             return;
         }
 
@@ -74,13 +109,13 @@ public class Main {
         }
 
         if (index == -1){
-            System.out.println("!!دفترچه تلفن پر است! نمی توان مخاطب جدید اضافه کرد!!");
+            System.out.println(getMessage("add.error.full"));
 
         }
         else {
             contacts[index] = name;
             phoneNumbers[index] = phone;
-            System.out.println("مخاطب با موفقیت اضافه شد");
+            System.out.println(getMessage("add.success"));
         }
 
     }
@@ -89,7 +124,7 @@ public class Main {
 
 
     public static void displayContacts (String[] contacts, String[] phoneNumbers){
-        System.out.println("---- لیست مخاطبین ----");
+        System.out.println(getMessage("list.title"));
         boolean foundAny = false;
         for ( int i = 0; i < contacts.length; i++){
          if (contacts[i] != null){
@@ -100,7 +135,7 @@ public class Main {
 
         }
         if (!foundAny){
-            System.out.println("!!دفترچه تلفن خالی است!!");
+            System.out.println(getMessage("list.empty"));
         }
 
 
@@ -110,7 +145,7 @@ public class Main {
 
     public static void searchContacts (String[] contacts, Scanner input, String[] phoneNumbers){
 
-        System.out.println("نام مخاطب مورد نظر را وارد کنید:  ");
+        System.out.println(getMessage("search.name.prompt"));
         String searchName = input.nextLine().trim();
 
         boolean found = false;
@@ -128,15 +163,34 @@ public class Main {
 
         }
         if (found){
-            System.out.println("مخاطب پیدا شد:");
-            System.out.println( "نام: " + contacts[foundIndex] );
-            System.out.println( "شماره: " + phoneNumbers[foundIndex] );
+            System.out.println(getMessage("search.found.title"));
+            System.out.println( getMessage("search.found.name") + contacts[foundIndex] );
+            System.out.println( getMessage("search.found.phone") + phoneNumbers[foundIndex] );
         }
         else {
-            System.out.println("مخاطب پیدا نشد.");
+            System.out.println(getMessage("search.not.found"));
         }
 
     }
 
 
+    private static class UTF8Control extends ResourceBundle.Control {
+        @Override
+        public ResourceBundle newBundle(String baseName, Locale locale, String format, ClassLoader loader, boolean reload)
+                throws IllegalAccessException, InstantiationException, IOException {
+            String bundleName = toBundleName(baseName, locale);
+            String resourceName = toResourceName(bundleName, "properties");
+            try (InputStream stream = loader.getResourceAsStream(resourceName)) {
+                if (stream != null) {
+                    try (Reader reader = new InputStreamReader(stream, StandardCharsets.UTF_8)) {
+                        return new java.util.PropertyResourceBundle(reader);
+                    }
+                }
+            }
+            return null;
+        }
+    }
 }
+
+
+
