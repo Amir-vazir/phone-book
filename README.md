@@ -1,19 +1,22 @@
 # 📒 AddressBook – Phonebook Project
-A consolebased
-phonebook application built with Java. Currently supports bilingual interface (English/Persian) and inmemory
-contact management.
+A console-based
+phonebook application built with Java. Supports bilingual interface (English/Persian) and dynamic contact management using ArrayList.
+---
+📖 **[Read this in Persian / مطالعه به فارسی ](README.fa.md)**
 ---
 ## ✨ Features
 - Add a contact (name and phone number)
 - Input validation (empty names are rejected)
 - Display the full contact list
 - Search for a contact by name
+- Edit contact information
+- Delete a contact
 - Bilingual interface (English/Persian) – language selection at startup
+- Unlimited capacity (using ArrayList instead of fixed arrays)
 ---
 ## 🛠️ Technical Details
 - **Language:** Java
--
-**Data Storage:** Two parallel arrays (`contacts[]` and `phoneNumbers[]`) with a fixed capacity of 40 contacts
+- **Data Structure:** `ArrayList<String>` for names and phone numbers (no capacity limit)
 - **Storage Type:** In-memory (RAM) – temporary
 - **Internationalization:** `ResourceBundle` with custom `UTF8Control` for proper Persian character encoding
 ---
@@ -26,6 +29,7 @@ java Main
 ## 📦 Releases
 - [v1.0](https://github.com/Amir-vazir/phone-book/releases/tag/v1.0) – Phase 1: Console menu with array storage
 - [v2.0](https://github.com/Amir-vazir/phone-book/releases/tag/v2.0) – Phase 2: Bilingual support (i18n)
+- [v3.0](https://github.com/Amir-vazir/phone-book/releases/tag/v3.0) – Phase 3: `ArrayList`, edit and delete contacts
 ---
 ## 📁 Project Structure
 ```
@@ -35,8 +39,9 @@ phoneBook/ ├── Main.java
 ```
 ---
 ## 📝 Notes
-- This project is currently in active development.
-- More features will be added in future phases.
+- This project is currently in active development; more features will be added in future phases.
+- Data is currently stored only in temporary memory (RAM) and will be lost after closing the program.
+- For proper display of Persian messages, make sure your terminal uses UTF-8 encoding (on Windows: run `chcp 65001` before executing).
 ---
 ## 📜 License
 This project is provided for educational purposes only and has no specific license.
@@ -44,49 +49,4 @@ This project is provided for educational purposes only and has no specific licen
 
 
 
-# 📒 دفترچه تلفن – AddressBook
-یک برنامه ی دفترچه تلفن مبتنی بر کنسول که با جاوا نوشته شده است. در حال حا ضر از رابط دو زبانه (انگلیسی/
-.فارسی) و مدیریت مخاطبین در حافظه پشتیبانی می کند
----
-## ✨ قابلیت ها
-- افزودن مخاطب (نام و شماره تلفن)
-- اعتبارسنجی ورودی (عدم پذیرش نام خالی)
-- نمایش لیست کامل مخاطبین
-- جستجوی مخاطب بر اساس نام
-- رابط دو زبانه (انگلیسی/فارسی) – انتخاب زبان در شروع برنامه
----
-## 🛠️ جزئیات فنی
-- زبان: جاوا
-- ذخیره سازی داده با دو آرایه ی موازی با ظرفیت ثابت ۴۰ مخاطب
-- نوع ذخیره سازی: در حافظه(رم) – موقتی
--  (i18n) بین ا لمللی سازی
 
----
-## 🚀 نحوه ی اجرا
-```bash
-javac Main.java
-java Main
-```
----
-## 📦 نسخه ها
-- [v1.0](https://github.com/Amir-vazir/phone-book/releases/tag/v1.0)
-  فاز اول: منوی کنسول با ذخیره سازی آرایه ای
-- [v2.0](https://github.com/Amir-vazir/phone-book/releases/tag/v2.0)
-  فاز دوم: پشتیبانی دو زبانه
-
----
-## 📁 ساختار پروژه
-```
-phoneBook/ ├── Main.java
-├── messages_en.properties
-└── messages_fa.properties
-```
----
-## 📝 نکات
-- .این پروژه در حال توسعه است
-.قابلیت های بیشتری در فازهای آینده اضافه خواهد شد -
----
-## 📜 مجوز
-این پروژه صرفاً
-برای اهداف آموزشی ارائه شده است و مجوز خاصی ندارد
-.
