@@ -132,22 +132,30 @@ public class Main {
         System.out.println(getMessage("search.name.prompt"));
         String searchName = input.nextLine().trim();
 
-        int foundIndex = -1;
-        for (int i = 0; i < contacts.size(); i++){
-            if (contacts.get(i).equalsIgnoreCase(searchName)){
-               foundIndex = i;
-               break;
+        if (searchName.isEmpty()){
+            System.out.println(getMessage("search.empty.error"));
+            return;
+        }
 
+        ArrayList<Integer> foundIndices = new ArrayList<>();
+
+        for (int i = 0; i < contacts.size(); i++){
+            String currentName = contacts.get(i);
+            if (currentName.toLowerCase().contains(searchName.toLowerCase())){
+                foundIndices.add(i);
             }
         }
 
-        if (foundIndex != -1){
-            System.out.println(getMessage("search.found.title"));
-            System.out.println(getMessage("search.found.name") + contacts.get(foundIndex));
-            System.out.println(getMessage("search.found.phone") + phoneNumbers.get(foundIndex));
+        if (foundIndices.isEmpty()){
+            System.out.println(getMessage("search.not.found"));
         }
         else {
-            System.out.println(getMessage("search.not.found"));
+            System.out.println(getMessage("search.results"));
+            for (int index : foundIndices){
+                System.out.println(getMessage("search.found.name") + contacts.get(index));
+                System.out.println(getMessage("search.found.phone") + phoneNumbers.get(index));
+                System.out.println("-----------");
+            }
         }
     }
 

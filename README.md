@@ -8,7 +8,7 @@ phonebook application built with Java. Supports bilingual interface (English/Per
 - Add a contact (name and phone number)
 - Input validation (empty names are rejected)
 - Display the full contact list
-- Search for a contact by name
+- Advanced contact search by name (even with partial name)
 - Edit contact information
 - Delete a contact
 - Bilingual interface (English/Persian) – language selection at startup
@@ -19,6 +19,7 @@ phonebook application built with Java. Supports bilingual interface (English/Per
 - **Data Structure:** `ArrayList<String>` for names and phone numbers (no capacity limit)
 - **Storage Type:** In-memory (RAM) – temporary
 - **Internationalization:** `ResourceBundle` with custom `UTF8Control` for proper Persian character encoding
+- **Search:** substring‑based and case‑insensitive, displaying all matching results
 ---
 ## 🚀 How to Run
 ```bash
@@ -30,6 +31,7 @@ java Main
 - [v1.0](https://github.com/Amir-vazir/phone-book/releases/tag/v1.0) – Phase 1: Console menu with array storage
 - [v2.0](https://github.com/Amir-vazir/phone-book/releases/tag/v2.0) – Phase 2: Bilingual support (i18n)
 - [v3.0](https://github.com/Amir-vazir/phone-book/releases/tag/v3.0) – Phase 3: `ArrayList`, edit and delete contacts
+- [v3.5](https://github.com/Amir-vazir/phone-book/releases/tag/v3.5) – Phase 3.5: Advanced search (partial & multiple results)
 ---
 ## 📁 Project Structure
 ```
@@ -45,8 +47,4 @@ phoneBook/ ├── Main.java
 ---
 ## 📜 License
 This project is provided for educational purposes only and has no specific license.
-
-
-
-
 
