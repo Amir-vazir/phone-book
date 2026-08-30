@@ -71,10 +71,10 @@ public class Main {
                     searchContacts(contacts, input, phoneNumbers);
                     break;
                 case 4:
-                    System.out.println("fgh");
+                    editContact(contacts, input, phoneNumbers);
                     break;
                 case 5:
-                    System.out.println("jgh");
+                    deleteContact(contacts, input, phoneNumbers);
                     break;
                 case 6:
                     System.out.println(getMessage("exit.message"));
