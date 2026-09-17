@@ -13,6 +13,7 @@ A console‑based phonebook application built with **Java**, fully following **o
 - Edit contact information
 - Delete a contact
 - Bilingual interface (English/Persian) – language selection at startup
+- Robust error handling with a custom Exception hierarchy
 - Unlimited capacity (using ArrayList instead of fixed arrays)
 - Adherence to four OOP principles: **Encapsulation, Inheritance, Polymorphism, and Abstraction**
 ---
@@ -23,7 +24,25 @@ A console‑based phonebook application built with **Java**, fully following **o
 - **Storage Type:** In-memory (RAM) – temporary
 - **Internationalization:** `ResourceBundle` with custom `UTF8Control` for proper Persian character encoding
 - **Search:** substring‑based and case‑insensitive, displaying all matching results
+- **Error Handling:** custom exception hierarchy with a clear separation between checked and unchecked exceptions
 - **UI** : Console‑based with `Scanner`, menu‑driven 
+---
+## ⚠️ Exception Handling
+Starting from Phase 5, all operations are guarded by a dedicated exception hierarchy:
+**Hierarchy overview:**
+```
+Exception
+└─ AddressBookException (checked)  →  Base class for all domain errors
+   ├── ContactNotFoundException (checked)  →  A contact to edit or delete cannot be found
+   └── DuplicateContactException (checked)  →  A contact with the same name is added
+RuntimeException 
+└── InvalidContactException (unchecked)  →  User input is invalid (e.g. empty name)
+```
+**Design rationale:**
+- **Checked** exceptions are used for *recoverable*, *predictable* domain errors that the caller **must** handle.
+- **Unchecked** exceptions (`InvalidContactException`) are used for *programming mistakes* or invalid input that the caller should not be forced to catch.
+- The base `AddressBookException` allows catching all domain errors in one place, and makes it easy to add new exception types in the future.
+- All error messages shown to the user are localized and loaded from the `.properties` files.
 ---
 ## 🚀 How to Run
 1. Compile all Java files (they are in the `phonebook` package):
@@ -42,6 +61,7 @@ java phonebook.Main
 - [v3.0](https://github.com/Amir-vazir/phone-book/releases/tag/v3.0) – Phase 3: `ArrayList`, edit and delete contacts
 - [v3.5](https://github.com/Amir-vazir/phone-book/releases/tag/v3.5) – Phase 3.5: Advanced search (partial & multiple results)
 - [v4.0](https://github.com/Amir-vazir/phone-book/releases/tag/v4.0) – Phase 4: Adherence to four OOP principles + Company Contact
+- [v5.0](https://github.com/Amir-vazir/phone-book/releases/tag/v5.0) – Phase 5: Custom exception hierarchy + duplicate prevention
 ---
 ## 📁 Project Structure
 ```
@@ -50,6 +70,10 @@ phonebook/ ├── Displayable.java  -  Interface for displaying objects
 ├── CompanyContact.java  -  Subclass with company name
 ├── ContactManager.java  -  Interface for CRUD operations
 ├── AddressBook.java  -  Implementation using ArrayList<Contact>
+├── AddressBookException.java  -  Base checked exception for domain errors
+├── ContactNotFoundException.java  -  Thrown when a contact is not found
+├── DuplicateContactException.java  -  Thrown when a duplicate contact is added
+├── InvalidContactException.java  -  Unchecked exception for invalid input
 ├── BundleManager.java  -  Static wrapper for ResourceBundle
 ├── UTF8Control.java  -  Custom control for UTF‑8 properties
 ├── ConsoleUI.java  -  User interface logic

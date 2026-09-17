@@ -13,6 +13,7 @@
 - ویرایش اطلاعات مخاطب
 - حذف مخاطب
 - رابط دو زبانه (انگلیسی/فارسی) – انتخاب زبان در شروع برنامه
+- Exception مدیریت قدر تمند خطاها با یک سلسله مراتب اختصاصی    
 - **ظرفیت نامحدود:**  `ArrayList`  استفاده از
 - **رعایت چهار اصل شی گرایی:** محرمانه سازی، وراثت، چندریختی و انتزاع
 ---
@@ -22,6 +23,17 @@
 - نوع ذخیره سازی: در حافظه (رم) – موقتی
 -    `UTF8Control`بین المللی سازی : سفارشی برای نمایش صحیح حروف فارسی
 -  substring و case-insensitive جستجو :  با نمایش همه ی نتایج منطبق
+---
+## ⚠️ مدیریت خطا (Exception Handling)
+از **فاز ۵** به بعد، تمام عملیات توسط یک سلسله مراتب اختصاصی محافظت می شوند
+```
+Exception 
+└─ AddressBookException (checked)          ←  کلاس پایه برای تمام خطاهای حوزه ی دفتر تلفن 
+  ├── ContactNotFoundException (checked)   ←  مخاطب مورد نظر برای ویرایش یا حذف پیدا نشود 
+  └── DuplicateContactException (checked)  ←  مخاطبی با نام تکراری اضافه شود 
+RuntimeException 
+└── InvalidContactException (unchecked)    ←  ورودی کاربر نامعتبر باشد (مثلاً نام خالی)
+```
 ---
 ## 🚀 نحوه ی اجرا
  همه فایل های جاوا را کامپایل کنید . ۱ 
@@ -42,6 +54,7 @@ java phonebook.Main
   فاز سوم : `ArrayList`، ویرایش و حذف مخاطب
 - [v3.5](https://github.com/Amir-vazir/phone-book/releases/tag/v3.5) –  جستجوی زیررشته ای و نمایش چند نتیجه (Substring)
 - [v4.0](https://github.com/Amir-vazir/phone-book/releases/tag/v4.0  )  –   رعایت چهار اصل شی گرایی + مخاطب شرکتی :فاز چهارم (OOP Pillars)
+- [v5.0](https://github.com/Amir-vazir/phone-book/releases/tag/v5.0  )  –   اختصاصی + جلوگیری از مخاطب تکراری :فاز پنجم (Exception)
 
 ---
 ## 📁 ساختار پروژه
@@ -51,6 +64,10 @@ phonebook/ ├── Displayable.java # این ترفیس برای نمایش ا
 ├── CompanyContact.java #  زیرکلاس با نام شرکت
 ├── ContactManager.java #  این ترفیس عملیات CRUD
 ├── AddressBook.java #  پیاده سازی با ArrayList<Contact>
+├── AddressBookException.java #  checked کلاس پایه برای خطاهای 
+├── ContactNotFoundException.java #  وقتی مخاطب پیدا نشود
+├── DuplicateContactException.java #  وقتی مخاطب تکراری اضافه شود
+├── InvalidContactException.java #  Exception برای ورودی نامعتبر (unchecked)
 ├── BundleManager.java #    ResourceBundle برای   
 ├── UTF8Control.java #   properties کنترل سفارشی برای فایل های  
 ├── ConsoleUI.java #  منطق رابط کاربری

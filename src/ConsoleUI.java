@@ -11,8 +11,7 @@ public ConsoleUI (){
     System.out.println("1. English");
     System.out.println(" فارسی .2");
     System.out.println("Your choice (1/2) : ");
-    int langChoice = scanner.nextInt();
-    scanner.nextLine();
+    int langChoice = readIntOrDefault(1);
 
     Locale locale;
     if (langChoice == 1){
@@ -43,8 +42,7 @@ public void start(){
         System.out.println(getMessage("menu.exit"));
         System.out.println(getMessage("menu.prompt"));
 
-        choice = scanner.nextInt();
-        scanner.nextLine();
+        choice = readIntOrDefault(-1);
 
         switch (choice){
             case 1 -> addContact();
@@ -66,17 +64,33 @@ public void start(){
     scanner.close();
 }
 
+private int readIntOrDefault (int defaultValue){
+    String line = scanner.nextLine().trim();
+    try{
+        return Integer.parseInt(line);
+    } catch (NumberFormatException e){
+        return defaultValue;
+    }
+}
+
 private String getMessage (String key){
     return bundle.getString(key);
 }
 
 private void addContact (){
-    Contact contact = createContactFromUser();
-    if (contact != null){
+
+    try {
+        Contact contact = createContactFromUser();
         contactManager.addContact(contact);
         System.out.println(getMessage("add.success"));
+    }catch (DuplicateContactException e){
+        System.out.println(getMessage("add.duplicate"));
+    }catch (InvalidContactException e){
+        System.out.println(e.getMessage());
     }
+
 }
+
 
 
 
@@ -84,8 +98,7 @@ private Contact createContactFromUser (){
     System.out.println(getMessage("add.name.prompt"));
     String name = scanner.nextLine().trim();
     if (name.isEmpty()){
-        System.out.println(getMessage("add.error.empty"));
-        return null;
+        throw new InvalidContactException(getMessage("add.error.empty"));
     }
     System.out.println(getMessage("add.phone.prompt"));
     String phone = scanner.nextLine().trim();
@@ -128,36 +141,27 @@ private void editContact (){
     System.out.println(getMessage("edit.name.prompt"));
     String oldName = scanner.nextLine().trim();
 
-    Contact found = contactManager.findExactContact(oldName);
-
-    if (found == null){
-        System.out.println(getMessage("edit.not.found"));
-        return;
-    }
-   Contact newContact = createContactFromUser();
-    if (newContact != null) {
-        contactManager.editContact(oldName, newContact);
-        System.out.println(getMessage("edit.success"));
-    }
+   try {
+       Contact newContact = createContactFromUser();
+       contactManager.editContact(oldName, newContact);
+       System.out.println(getMessage("edit.success"));
+   }catch (ContactNotFoundException e){
+       System.out.println(getMessage("edit.not.found"));
+   }catch (InvalidContactException e){
+       System.out.println(e.getMessage());
+   }
 }
 
 
 private void deleteContact(){
     System.out.println(getMessage("delete.name.prompt"));
     String nameDelete = scanner.nextLine().trim();
-
-    Contact foundDelete = contactManager.findExactContact(nameDelete);
-
-
-    if(foundDelete == null){
+    try {
+        contactManager.deleteContact(nameDelete);
+        System.out.println(getMessage("delete.success"));
+    }catch (ContactNotFoundException e){
         System.out.println(getMessage("delete.not.found"));
-        return;
     }
-
-    contactManager.deleteContact(nameDelete);
-    System.out.println(getMessage("delete.success"));
 }
 
-
 }
-

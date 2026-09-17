@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 public interface ContactManager {
 
-    void addContact(Contact contact);
+    void addContact(Contact contact) throws DuplicateContactException;
 
     void displayAll();
 
@@ -11,8 +11,8 @@ public interface ContactManager {
 
     Contact findExactContact(String name);
 
-    void editContact(String oldName, Contact newContact);
+    void editContact(String oldName, Contact newContact) throws ContactNotFoundException;
 
-    void deleteContact(String nameDelete);
+    void deleteContact(String nameDelete) throws ContactNotFoundException;
 
 }

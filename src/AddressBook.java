@@ -8,7 +8,13 @@ public class AddressBook implements ContactManager {
 
 
     @Override
-    public void addContact( Contact contact){
+    public void addContact( Contact contact) throws DuplicateContactException{
+        if (contact == null){
+            throw new IllegalArgumentException("Contact can not be null");
+        }
+        if (findExactContact(contact.getName()) != null ){
+            throw new DuplicateContactException("Duplicate contact: " + contact.getName());
+        }
      contacts.add(contact);
     }
 
@@ -49,18 +55,24 @@ public class AddressBook implements ContactManager {
     }
 
     @Override
-    public void  editContact ( String oldName, Contact newContact){
+    public void  editContact ( String oldName, Contact newContact) throws ContactNotFoundException{
         for (int i = 0 ; i < contacts.size(); i++){
             if (contacts.get(i).getName().equalsIgnoreCase(oldName)){
                 contacts.set(i, newContact);
                 return;
             }
         }
+        throw new ContactNotFoundException("Contact not found: " + oldName);
 }
 
     @Override
-    public void deleteContact(String nameDelete){
-        contacts.removeIf(c -> c.getName().equalsIgnoreCase(nameDelete));
+    public void deleteContact(String nameDelete) throws ContactNotFoundException{
+    boolean  removed  =  contacts.removeIf(c -> c.getName().equalsIgnoreCase(nameDelete));
+
+    if (!removed){
+        throw new ContactNotFoundException("Contact not found: " + nameDelete );
+        }
+
     }
 
 
