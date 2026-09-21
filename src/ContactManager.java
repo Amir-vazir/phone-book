@@ -1,4 +1,6 @@
-import java.util.ArrayList;
+
+import java.util.List;
+
 public interface ContactManager {
 
     void addContact(Contact contact) throws DuplicateContactException;
@@ -7,9 +9,7 @@ public interface ContactManager {
 
     boolean isEmpty();
 
-    ArrayList<Contact> searchContacts(String keyWord);
-
-    Contact findExactContact(String name);
+    List<Contact> searchContacts(String keyWord);
 
     void editContact(String oldName, Contact newContact) throws ContactNotFoundException;
 

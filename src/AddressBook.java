@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.List;
+
 public class AddressBook implements ContactManager {
     private ArrayList<Contact> contacts;
 
@@ -32,8 +34,8 @@ public class AddressBook implements ContactManager {
     }
 
     @Override
-    public ArrayList<Contact> searchContacts(String keyWord) {
-        ArrayList<Contact> result = new ArrayList<>();
+    public List<Contact> searchContacts(String keyWord) {
+        List<Contact> result = new ArrayList<>();
         String lowerKeyword = keyWord.toLowerCase();
         for (Contact c : contacts){
             if (c.getName().toLowerCase().contains(lowerKeyword)){
@@ -43,8 +45,8 @@ public class AddressBook implements ContactManager {
         return result;
     }
 
-    @Override
-    public Contact findExactContact (String name){
+
+    private Contact findExactContact (String name){
         for (Contact c : contacts){
             if (c.getName().equalsIgnoreCase(name)){
                 return c;

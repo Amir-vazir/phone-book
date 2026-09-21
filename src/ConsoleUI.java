@@ -1,4 +1,8 @@
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
+import java.util.Scanner;
+
 public class ConsoleUI {
 private Scanner scanner;
 private ResourceBundle bundle;
@@ -121,7 +125,7 @@ private void searchContacts (){
         System.out.println(getMessage("search.empty.error"));
         return;
     }
-    ArrayList<Contact> results = contactManager.searchContacts(keyWord);
+    List<Contact> results = contactManager.searchContacts(keyWord);
     if (results.isEmpty()){
         System.out.println(getMessage("search.not.found"));
     }
