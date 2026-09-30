@@ -1,12 +1,10 @@
-import java.util.List;
-import java.util.Locale;
-import java.util.ResourceBundle;
-import java.util.Scanner;
+import java.util.*;
 
 public class ConsoleUI {
-private Scanner scanner;
-private ResourceBundle bundle;
-private ContactManager contactManager;
+private final Scanner scanner;
+private final ResourceBundle bundle;
+private final ContactManager contactManager;
+private final Map<Integer, Runnable> actions;
 
 public ConsoleUI (){
     scanner =new Scanner(System.in);
@@ -30,43 +28,43 @@ public ConsoleUI (){
 
     contactManager = new AddressBook();
 
+    actions= Map.of(
+            1, this::addContact,
+            2, this::listContact,
+            3, this::searchContacts,
+            4, this::editContact,
+            5, this::deleteContact
+    );
+
+
 }
 
 public void start(){
-    int choice;
-
-    do {
-
-        System.out.println(getMessage("menu.title"));
-        System.out.println(getMessage("menu.add"));
-        System.out.println(getMessage("menu.list"));
-        System.out.println(getMessage("menu.search"));
-        System.out.println(getMessage("menu.edit"));
-        System.out.println(getMessage("menu.delete"));
-        System.out.println(getMessage("menu.exit"));
-        System.out.println(getMessage("menu.prompt"));
-
-        choice = readIntOrDefault(-1);
-
-        switch (choice){
-            case 1 -> addContact();
-            case 2 -> {
-                if (contactManager.isEmpty()) {
-                    System.out.println(getMessage("list.empty"));
-                }
-                else { contactManager.displayAll();}
-            }
-            case 3 -> searchContacts();
-            case 4 -> editContact();
-            case 5 -> deleteContact();
-            case 6 -> System.out.println(getMessage("exit.message"));
-            default -> System.out.println(getMessage("invalid.option"));
+    while (true) {
+        printMenu();
+        int choice = readIntOrDefault(-1);
+        if (choice == 6) {
+            System.out.println(getMessage("exit.message"));
+            break;
         }
+        actions.getOrDefault(choice, () -> System.out.println(getMessage("invalid.option")))
+                .run();
 
-
-    }while (choice != 6);
+    }
     scanner.close();
 }
+
+private void printMenu (){
+    System.out.println(getMessage("menu.title"));
+    System.out.println(getMessage("menu.add"));
+    System.out.println(getMessage("menu.list"));
+    System.out.println(getMessage("menu.search"));
+    System.out.println(getMessage("menu.edit"));
+    System.out.println(getMessage("menu.delete"));
+    System.out.println(getMessage("menu.exit"));
+    System.out.println(getMessage("menu.prompt"));
+}
+
 
 private int readIntOrDefault (int defaultValue){
     String line = scanner.nextLine().trim();
@@ -118,24 +116,33 @@ private Contact createContactFromUser (){
 }
 
 
-private void searchContacts (){
+private void listContact (){
+    if (contactManager.isEmpty()){
+        System.out.println(getMessage("list.empty"));
+        return;
+    }
+    contactManager.getContactSortedByName().forEach(this::printContact);
+}
+
+private void printContact (Contact contact) {
+    contact.display();
+    System.out.println("--------");
+}
+
+
+private void searchContacts () {
     System.out.println(getMessage("search.name.prompt"));
     String keyWord = scanner.nextLine().trim();
-    if (keyWord.isEmpty()){
+    if (keyWord.isEmpty()) {
         System.out.println(getMessage("search.empty.error"));
         return;
     }
     List<Contact> results = contactManager.searchContacts(keyWord);
-    if (results.isEmpty()){
+    if (results.isEmpty()) {
         System.out.println(getMessage("search.not.found"));
-    }
-    else {
+    } else {
         System.out.println(getMessage("search.results"));
-        for (Contact c : results ){
-            c.display();
-            System.out.println("----------");
-        }
-
+        results.forEach(this::printContact);
     }
 
 }

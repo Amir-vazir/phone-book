@@ -8,7 +8,7 @@ A console‑based phonebook application built with **Java**, fully following **o
 - Add a contact (name and phone number)
 - Input validation (empty names are rejected)
 - Add a company contact – optionally attach a company name
-- Display the full contact list
+- Display the full contact list, sorted alphabetically (case‑insensitive)
 - Advanced contact search by name (even with partial name)
 - Edit contact information
 - Delete a contact
@@ -16,6 +16,7 @@ A console‑based phonebook application built with **Java**, fully following **o
 - Robust error handling with a custom Exception hierarchy
 - Unlimited capacity (using ArrayList instead of fixed arrays)
 - Adherence to four OOP principles: **Encapsulation, Inheritance, Polymorphism, and Abstraction**
+- Functional refactor with **Stream API**, **Predicate factories**, and **Optional**
 ---
 ## 🛠️ Technical Details
 - **Language:** Java
@@ -24,8 +25,9 @@ A console‑based phonebook application built with **Java**, fully following **o
 - **Storage Type:** In-memory (RAM) – temporary
 - **Internationalization:** `ResourceBundle` with custom `UTF8Control` for proper Persian character encoding
 - **Search:** substring‑based and case‑insensitive, displaying all matching results
+- **Sorting:** via `Comparator.comparing(Contact::getName, String.CASE_INSENSITIVE_ORDER)`
 - **Error Handling:** custom exception hierarchy with a clear separation between checked and unchecked exceptions
-- **UI** : Console‑based with `Scanner`, menu‑driven 
+- **UI** : Console‑based with `Scanner`, menu actions are dispatched through a `Map<Integer, Runnable>`
 ---
 ## ⚠️ Exception Handling
 Starting from Phase 5, all operations are guarded by a dedicated exception hierarchy:
@@ -43,6 +45,21 @@ RuntimeException
 - **Unchecked** exceptions (`InvalidContactException`) are used for *programming mistakes* or invalid input that the caller should not be forced to catch.
 - The base `AddressBookException` allows catching all domain errors in one place, and makes it easy to add new exception types in the future.
 - All error messages shown to the user are localized and loaded from the `.properties` files.
+---
+## 🧠 Functional Programming (Phase 6)
+Starting from Phase 6, the data layer was rewritten using Java's functional idioms.
+At the heart of this phase is a new overload:
+```java
+List<Contact> searchContacts(Predicate<Contact> predicate);
+```
+This method lets a programmer search the address book with any custom rule, without touching the AddressBook class itself. All that's needed is to write
+their own Predicate. It's a demonstration of the Open/Closed Principle.
+For example, searching by phone prefix:
+```java
+public List<Contact> searchByPhonePrefix(String prefix) {
+return searchContacts(c -> c.getPhone().startsWith(prefix));
+}
+```
 ---
 ## 🚀 How to Run
 1. Compile all Java files (they are in the `phonebook` package):
@@ -62,14 +79,15 @@ java phonebook.Main
 - [v3.5](https://github.com/Amir-vazir/phone-book/releases/tag/v3.5) – Phase 3.5: Advanced search (partial & multiple results)
 - [v4.0](https://github.com/Amir-vazir/phone-book/releases/tag/v4.0) – Phase 4: Adherence to four OOP principles + Company Contact
 - [v5.0](https://github.com/Amir-vazir/phone-book/releases/tag/v5.0) – Phase 5: Custom exception hierarchy + duplicate prevention
+- [v6.0](https://github.com/Amir-vazir/phone-book/releases/tag/v6.0) – Phase 6: Functional refactor — Stream API, Predicate, Optional, Map dispatch
 ---
 ## 📁 Project Structure
 ```
 phonebook/ ├── Displayable.java  -  Interface for displaying objects
-├── Contact.java  -  Base contact class
+├── Contact.java  -  Base contact class + Predicate factories
 ├── CompanyContact.java  -  Subclass with company name
-├── ContactManager.java  -  Interface for CRUD operations
-├── AddressBook.java  -  Implementation using ArrayList<Contact>
+├── ContactManager.java  -  Interface for CRUD operations + functional search
+├── AddressBook.java  -  Stream‑based implementation using List<Contact>
 ├── AddressBookException.java  -  Base checked exception for domain errors
 ├── ContactNotFoundException.java  -  Thrown when a contact is not found
 ├── DuplicateContactException.java  -  Thrown when a duplicate contact is added

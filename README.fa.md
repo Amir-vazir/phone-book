@@ -8,7 +8,7 @@
 - افزودن مخاطب (نام و شماره تلفن)
 - اعتبارسنجی ورودی (عدم پذیرش نام خالی)
 - افزودن مخاطب شرکتی – امکان ثبت نام شرکت به صورت اختیاری
-- نمایش لیست کامل مخاطبین
+-  نمایش لیست کامل مخاطبین (به ترتیب حروف الفبا)
 - جستجوی پیشرفته ی مخاطب بر اساس نام (حتی با بخشی از نام)
 - ویرایش اطلاعات مخاطب
 - حذف مخاطب
@@ -16,13 +16,17 @@
 - Exception مدیریت قدر تمند خطاها با یک سلسله مراتب اختصاصی    
 - **ظرفیت نامحدود:**  `ArrayList`  استفاده از
 - **رعایت چهار اصل شی گرایی:** محرمانه سازی، وراثت، چندریختی و انتزاع
+- بازنویسی شده با رویکرد فانکشنال
 ---
 ## 🛠️ جزئیات فنی
 - زبان:  جاوا 
 -  `ArrayList<Contact> `(ساختار داده :  برای ذخیره ی نام ها و شماره ها (بدون محدودیت ظرفیت
+-  (stream، lambda، `Predicate`، `Optional` و method reference)سبک برنامه نویسی : فانکشنال 
 - نوع ذخیره سازی: در حافظه (رم) – موقتی
 -    `UTF8Control`بین المللی سازی : سفارشی برای نمایش صحیح حروف فارسی
 -  substring و case-insensitive جستجو :  با نمایش همه ی نتایج منطبق
+-    `Comparator.comparing(Contact::getName, String.CASE_INSENSITIVE_ORDER)` مرتب سازی : حروف الفبا
+-    `Map<Integer, Runnable>` رابط کاربری : کنسولی. مدیریت عملیات منو از طریق
 ---
 ## ⚠️ مدیریت خطا (Exception Handling)
 از **فاز ۵** به بعد، تمام عملیات توسط یک سلسله مراتب اختصاصی محافظت می شوند
@@ -33,6 +37,27 @@ Exception
   └── DuplicateContactException (checked)  ←  مخاطبی با نام تکراری اضافه شود 
 RuntimeException 
 └── InvalidContactException (unchecked)    ←  ورودی کاربر نامعتبر باشد (مثلاً نام خالی)
+```
+---
+##  🧠 برنامه نویسی فانکشنال(فاز ۶) 
+از فاز ۶ به بعد، لایه ی داده با رویکرد فانکشنال جاوا بازنویسی شده است.
+ 
+  جدید قلب این فاز است overload این
+```java
+List<Contact> searchContacts(Predicate<Contact> predicate);
+```
+.این متد اجازه می دهد برنامه نویس اگر خواست بتواند با هر قاعده ی دلخواهی دفتر تلفن را جستجو کند 
+
+.خودش را بنویسد Predicate فقط کافیست
+
+.Open/Closed نمایشی از اصل 
+
+:مثلاً جستجو بر اساس پیش شماره ی تلفن 
+
+```java
+public List<Contact> searchByPhonePrefix(String prefix) {
+return searchContacts(c -> c.getPhone().startsWith(prefix));
+}
 ```
 ---
 ## 🚀 نحوه ی اجرا
@@ -55,7 +80,7 @@ java phonebook.Main
 - [v3.5](https://github.com/Amir-vazir/phone-book/releases/tag/v3.5) –  جستجوی زیررشته ای و نمایش چند نتیجه (Substring)
 - [v4.0](https://github.com/Amir-vazir/phone-book/releases/tag/v4.0  )  –   رعایت چهار اصل شی گرایی + مخاطب شرکتی :فاز چهارم (OOP Pillars)
 - [v5.0](https://github.com/Amir-vazir/phone-book/releases/tag/v5.0  )  –   اختصاصی + جلوگیری از مخاطب تکراری :فاز پنجم (Exception)
-
+- [v6.0](https://github.com/Amir-vazir/phone-book/releases/tag/v6.0) – فاز ششم: (Functional) بازنویسی فانکشنال 
 ---
 ## 📁 ساختار پروژه
 ```

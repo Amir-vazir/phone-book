@@ -1,8 +1,10 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class AddressBook implements ContactManager {
-    private ArrayList<Contact> contacts;
+    private final ArrayList<Contact> contacts;
 
     public AddressBook (){
         contacts = new ArrayList<>();
@@ -11,10 +13,8 @@ public class AddressBook implements ContactManager {
 
     @Override
     public void addContact( Contact contact) throws DuplicateContactException{
-        if (contact == null){
-            throw new IllegalArgumentException("Contact can not be null");
-        }
-        if (findExactContact(contact.getName()) != null ){
+        Objects.requireNonNull(contact, "Contact can not be null");
+        if (findExactContact(contact.getName()).isPresent() ){
             throw new DuplicateContactException("Duplicate contact: " + contact.getName());
         }
      contacts.add(contact);
@@ -22,10 +22,8 @@ public class AddressBook implements ContactManager {
 
     @Override
     public void displayAll (){
-      for (int i = 0; i < contacts.size(); i++){
-          System.out.println((i + 1) + ". ");
-          contacts.get(i).display();
-      }
+        IntStream.range(0, contacts.size()).forEach(i -> {System.out.println((i + 1) + ". ");
+               contacts.get(i).display();});
     }
 
     @Override
@@ -33,43 +31,43 @@ public class AddressBook implements ContactManager {
         return contacts.isEmpty();
     }
 
+
     @Override
-    public List<Contact> searchContacts(String keyWord) {
-        List<Contact> result = new ArrayList<>();
-        String lowerKeyword = keyWord.toLowerCase();
-        for (Contact c : contacts){
-            if (c.getName().toLowerCase().contains(lowerKeyword)){
-                result.add(c);
-            }
-        }
-        return result;
+    public List<Contact> getContactSortedByName(){
+     return  contacts.stream().sorted(Comparator.comparing(Contact::getName, String.CASE_INSENSITIVE_ORDER))
+                .collect(Collectors.toList());
     }
 
+    @Override
+    public long count(){
+        return contacts.size();
+    }
 
-    private Contact findExactContact (String name){
-        for (Contact c : contacts){
-            if (c.getName().equalsIgnoreCase(name)){
-                return c;
-            }
+    @Override
+    public List<Contact> searchContacts(String keyWord) {
+     return   searchContacts(Contact.nameContains(keyWord));
+    }
 
-        }
-        return null;
+    @Override
+    public List<Contact> searchContacts(Predicate<Contact> predicate){
+      return   contacts.stream().filter(predicate).collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<Contact> findExactContact (String name){
+       return contacts.stream().filter(Contact.nameEquals(name)).findFirst();
     }
 
     @Override
     public void  editContact ( String oldName, Contact newContact) throws ContactNotFoundException{
-        for (int i = 0 ; i < contacts.size(); i++){
-            if (contacts.get(i).getName().equalsIgnoreCase(oldName)){
-                contacts.set(i, newContact);
-                return;
-            }
-        }
-        throw new ContactNotFoundException("Contact not found: " + oldName);
-}
+     int index =  IntStream.range(0,contacts.size()).filter(i -> contacts.get(i).getName().equalsIgnoreCase(oldName))
+               .findFirst().orElseThrow( () -> new ContactNotFoundException("Contact not found: " + oldName));
+     contacts.set(index, newContact);
+    }
 
     @Override
     public void deleteContact(String nameDelete) throws ContactNotFoundException{
-    boolean  removed  =  contacts.removeIf(c -> c.getName().equalsIgnoreCase(nameDelete));
+    boolean  removed  =  contacts.removeIf(Contact.nameEquals(nameDelete));
 
     if (!removed){
         throw new ContactNotFoundException("Contact not found: " + nameDelete );
