@@ -160,6 +160,8 @@ private void editContact (){
        System.out.println(getMessage("edit.not.found"));
    }catch (InvalidContactException e){
        System.out.println(e.getMessage());
+   } catch (DuplicateContactException e) {
+       System.out.println(getMessage("add.duplicate"));
    }
 }
 

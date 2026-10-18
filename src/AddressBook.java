@@ -59,9 +59,17 @@ public class AddressBook implements ContactManager {
     }
 
     @Override
-    public void  editContact ( String oldName, Contact newContact) throws ContactNotFoundException{
+    public void  editContact ( String oldName, Contact newContact) throws ContactNotFoundException,DuplicateContactException{
      int index =  IntStream.range(0,contacts.size()).filter(i -> contacts.get(i).getName().equalsIgnoreCase(oldName))
                .findFirst().orElseThrow( () -> new ContactNotFoundException("Contact not found: " + oldName));
+
+     boolean isDuplicate = IntStream.range(0, contacts.size())
+               .filter( i -> i != index).anyMatch(i -> contacts.get(i).getName().equalsIgnoreCase(newContact.getName()));
+
+     if (isDuplicate){
+         throw new DuplicateContactException("Duplicate contact: " + newContact.getName());
+     }
+
      contacts.set(index, newContact);
     }
 

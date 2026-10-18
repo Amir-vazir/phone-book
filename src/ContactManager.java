@@ -16,7 +16,7 @@ public interface ContactManager {
 
     Optional<Contact> findExactContact (String name);
 
-    void editContact(String oldName, Contact newContact) throws ContactNotFoundException;
+    void editContact(String oldName, Contact newContact) throws ContactNotFoundException, DuplicateContactException;
 
     void deleteContact(String nameDelete) throws ContactNotFoundException;
 

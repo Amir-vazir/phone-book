@@ -31,6 +31,18 @@ public class Contact implements Displayable {
       return contact -> contact.getName().equalsIgnoreCase(name);
   }
 
+  @Override
+  public boolean equals (Object o){
+      if (this == o) return true;
+      if (o == null || getClass() != o.getClass()) return false;
+      Contact other = (Contact) o;
+      return name.equalsIgnoreCase(other.name);
+  }
+
+  @Override
+  public int hashCode (){
+      return name.toLowerCase().hashCode();
+  }
 
 }
 
