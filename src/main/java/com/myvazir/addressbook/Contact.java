@@ -1,3 +1,5 @@
+package com.myvazir.addressbook;
+
 import java.util.function.Predicate;
 
 public class Contact implements Displayable {

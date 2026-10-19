@@ -1,3 +1,5 @@
+package com.myvazir.addressbook;
+
 public class CompanyContact extends Contact {
 
     private String companyName;

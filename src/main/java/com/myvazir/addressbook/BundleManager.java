@@ -1,3 +1,5 @@
+package com.myvazir.addressbook;
+
 import java.util.ResourceBundle;
 
 public class BundleManager {
